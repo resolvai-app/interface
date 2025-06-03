@@ -24,6 +24,7 @@ import cn from "classnames";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { FaPhone, FaPhoneSlash, FaTimes } from "react-icons/fa";
+import { audioContext } from "@/lib/utils";
 
 const MatrixRain = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -160,6 +161,20 @@ export const CallModal = ({
     };
   }, [connected, client]);
 
+  // 新增：包装 connect 事件
+  const handleConnect = async () => {
+    try {
+      const ctx = await audioContext();
+      if (ctx.state === "suspended") {
+        await ctx.resume();
+        console.log("[audio-context] resumed by user gesture");
+      }
+    } catch (e) {
+      console.log("[audio-context] resume error:", e);
+    }
+    connect();
+  };
+
   if (!isActive) return null;
 
   return (
@@ -274,7 +289,7 @@ export const CallModal = ({
               ? "bg-cyan-500 text-white hover:bg-cyan-600"
               : "bg-gray-800 text-cyan-400 hover:bg-gray-700"
           )}
-          onClick={connected ? disconnect : connect}
+          onClick={connected ? disconnect : handleConnect}
           aria-label={connected ? "Disconnect" : "Connect"}
         >
           <div className="absolute inset-0 rounded-full border border-cyan-400/30 animate-ping" />

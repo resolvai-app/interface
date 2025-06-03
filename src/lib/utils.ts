@@ -37,34 +37,10 @@ async function createContext(options?: GetAudioContextOptions) {
 export const audioContext: (options?: GetAudioContextOptions) => Promise<AudioContext> = async (
   options
 ) => {
-  try {
-    // 触发用户交互，兼容移动端
-    console.log("[audio-context] Audio play start");
-    const a = new Audio();
-    a.src =
-      "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
-    await Promise.race([
-      a.play(),
-      new Promise((_, reject) => setTimeout(() => reject(new Error("Audio play timeout")), 1000)),
-    ]);
-    console.log("[audio-context] Audio play end");
-    if (options?.id && map.has(options.id)) {
-      return map.get(options.id)!;
-    }
-    return await createContext(options);
-  } catch (e) {
-    console.log("[audio-context] Audio play error:", e);
-    // 失败时等待一次用户交互
-    await new Promise((res) => {
-      if (typeof window === "undefined") return;
-      window.addEventListener("pointerdown", res, { once: true });
-      window.addEventListener("keydown", res, { once: true });
-    });
-    if (options?.id && map.has(options.id)) {
-      return map.get(options.id)!;
-    }
-    return await createContext(options);
+  if (options?.id && map.has(options.id)) {
+    return map.get(options.id)!;
   }
+  return await createContext(options);
 };
 
 export function base64ToArrayBuffer(base64: string) {
