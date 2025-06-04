@@ -1,5 +1,4 @@
 import { EventEmitter } from "eventemitter3";
-import { v4 as uuidv4 } from "uuid";
 import { LiveClientOptions, StreamingLog } from "../types";
 import { base64ToArrayBuffer } from "./utils";
 
@@ -64,8 +63,8 @@ export class WssLiveClient extends EventEmitter<LiveClientEventTypes> {
     this.emit("log", log);
   }
 
-  async connect(): Promise<boolean> {
-    this._streamId = uuidv4();
+  async connect(chatId: string): Promise<boolean> {
+    this._streamId = chatId;
     if (this._status === "connected" || this._status === "connecting") {
       return false;
     }

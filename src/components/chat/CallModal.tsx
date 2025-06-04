@@ -94,7 +94,9 @@ const MatrixRain = () => {
 export const CallModal = ({
   isActive,
   onEndCall,
+  chatId,
 }: {
+  chatId: string;
   isActive: boolean;
   onEndCall: () => void;
 }) => {
@@ -172,7 +174,7 @@ export const CallModal = ({
     } catch (e) {
       console.log("[audio-context] resume error:", e);
     }
-    connect();
+    connect(chatId);
   };
 
   if (!isActive) return null;

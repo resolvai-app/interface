@@ -1,5 +1,4 @@
 "use client";
-
 import { useChatStore } from "@/hooks/store/useTaskStore";
 import { useChat } from "@ai-sdk/react";
 import { useEffect, useRef, useState } from "react";
@@ -66,7 +65,6 @@ export default function ChatBox() {
 
   const handleCreateChat = (type: "food" | "hospital") => {
     const newChat = {
-      id: Date.now().toString(),
       title: type === "food" ? "Food Delivery Chat" : "Hospital Registration Chat",
       description: type === "food" ? "Order food delivery service" : "Book hospital appointment",
       createdAt: new Date().toISOString(),
@@ -82,7 +80,7 @@ export default function ChatBox() {
 
   return (
     <div className="h-full flex flex-col relative">
-      <CallModal isActive={isCallActive} onEndCall={endCall} />
+      <CallModal isActive={isCallActive} onEndCall={endCall} chatId={selectedChatId} />
 
       <div className="flex-1 overflow-y-auto p-4 pb-24">
         <div className="max-w-4xl mx-auto">

@@ -1,14 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import ChatList from "@/components/chat/ChatList";
 import ChatBox from "@/components/chat/ChatBox";
+import ChatList from "@/components/chat/ChatList";
 import { useChatStore } from "@/hooks/store/useTaskStore";
-import Link from "next/link";
-import { FaComments, FaHome } from "react-icons/fa";
-import { v4 as uuidv4 } from "uuid";
 import { Chat } from "@/types";
+import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { FaComments, FaHome } from "react-icons/fa";
 
 export default function ChatPage() {
   const [isChatListVisible, setIsChatListVisible] = useState(false);
@@ -34,15 +33,19 @@ export default function ChatPage() {
 
   const handleChatSelect = (chatId: string | null) => {
     if (chatId === null) {
-      // 创建新会话
-      const newChat: Chat = {
-        id: uuidv4(),
-        title: "New Chat",
-        description: "Click to edit chat details",
-        createdAt: new Date().toISOString(),
-      };
-      setChats([...chats, newChat]);
-      setSelectedChatId(newChat.id);
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat`, {
+        method: "POST",
+        body: JSON.stringify({
+          title: "New Chat",
+          description: "Click to edit chat details",
+          createdAt: new Date().toISOString(),
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setChats([...chats, data]);
+          setSelectedChatId(data.id);
+        });
       // setMessages([]); // 如有 setMessages
     } else {
       setSelectedChatId(chatId);
