@@ -86,7 +86,7 @@ const MatrixRain = () => {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 w-full h-full opacity-60 pointer-events-none z-0"
-      style={{ position: 'absolute' }}
+      style={{ position: "absolute" }}
     />
   );
 };
@@ -181,7 +181,7 @@ export const CallModal = ({
     <div className="fixed inset-0 bg-black flex flex-col items-center justify-center min-h-screen z-50">
       <MatrixRain />
       <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/80 to-black/90 z-10" />
-      
+
       <SettingsDialog />
       {/* Center lively animated pulse */}
       <div className="flex-1 flex items-center justify-center w-full relative z-20">
@@ -211,9 +211,15 @@ export const CallModal = ({
           {/* 外圈装饰 */}
           <div className="absolute inset-0 rounded-full border-4 border-cyan-400/20" />
           <div className="absolute inset-0 rounded-full border-2 border-cyan-400/30 animate-ping" />
-          <div className="absolute inset-0 rounded-full border border-cyan-400/20 animate-ping" style={{ animationDelay: "0.5s" }} />
-          <div className="absolute inset-0 rounded-full border border-cyan-400/10 animate-ping" style={{ animationDelay: "1s" }} />
-          
+          <div
+            className="absolute inset-0 rounded-full border border-cyan-400/20 animate-ping"
+            style={{ animationDelay: "0.5s" }}
+          />
+          <div
+            className="absolute inset-0 rounded-full border border-cyan-400/10 animate-ping"
+            style={{ animationDelay: "1s" }}
+          />
+
           {/* 内部装饰圆环 */}
           <motion.div
             className="absolute inset-0 rounded-full border-2 border-cyan-400/40"
@@ -226,7 +232,7 @@ export const CallModal = ({
               ease: "linear",
             }}
           />
-          
+
           {/* 中心内容 */}
           <motion.div
             className="relative z-10"
@@ -247,7 +253,7 @@ export const CallModal = ({
             <>
               <motion.div
                 className="absolute w-2 h-2 bg-cyan-400 rounded-full"
-                style={{ top: '10%', left: '50%' }}
+                style={{ top: "10%", left: "50%" }}
                 animate={{
                   scale: [1, 1.5, 1],
                   opacity: [0.5, 1, 0.5],
@@ -260,7 +266,7 @@ export const CallModal = ({
               />
               <motion.div
                 className="absolute w-2 h-2 bg-cyan-400 rounded-full"
-                style={{ bottom: '10%', right: '50%' }}
+                style={{ bottom: "10%", right: "50%" }}
                 animate={{
                   scale: [1, 1.5, 1],
                   opacity: [0.5, 1, 0.5],
