@@ -33,12 +33,11 @@ export type ClientContentLog = {
 };
 
 /**
- * Task related types
+ * Chat related types
  */
-export type Task = {
+export type Chat = {
   id: string;
   title: string;
   description: string;
-  status: "pending" | "in_progress" | "completed";
   createdAt: string;
 };

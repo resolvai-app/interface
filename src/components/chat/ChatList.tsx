@@ -1,77 +1,77 @@
 "use client";
 
-import { Task } from "@/types";
+import { Chat } from "@/types";
 import { motion } from "framer-motion";
 import { FaTrash, FaInbox, FaPlus, FaEdit } from "react-icons/fa";
 import { useState } from "react";
 
-interface TaskListProps {
-  tasks: Task[];
-  selectedTaskId: string | null;
-  onTaskSelect: (taskId: string | null) => void;
-  onTaskDelete: (taskId: string) => void;
-  onTaskUpdate: (taskId: string, updates: Partial<Task>) => void;
+interface ChatListProps {
+  chats: Chat[];
+  selectedChatId: string | null;
+  onChatSelect: (chatId: string | null) => void;
+  onChatDelete: (chatId: string) => void;
+  onChatUpdate: (chatId: string, updates: Partial<Chat>) => void;
 }
 
-export default function TaskList({
-  tasks,
-  selectedTaskId,
-  onTaskSelect,
-  onTaskDelete,
-  onTaskUpdate,
-}: TaskListProps) {
-  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+export default function ChatList({
+  chats,
+  selectedChatId,
+  onChatSelect,
+  onChatDelete,
+  onChatUpdate,
+}: ChatListProps) {
+  const [editingChatId, setEditingChatId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
 
-  const handleEditClick = (e: React.MouseEvent, task: Task) => {
+  const handleEditClick = (e: React.MouseEvent, chat: Chat) => {
     e.stopPropagation();
-    setEditingTaskId(task.id);
-    setEditingTitle(task.title);
+    setEditingChatId(chat.id);
+    setEditingTitle(chat.title);
   };
 
-  const handleEditSubmit = (taskId: string, newTitle: string) => {
+  const handleEditSubmit = (chatId: string, newTitle: string) => {
     if (newTitle.trim() === "") return;
-    onTaskUpdate(taskId, { title: newTitle });
-    setEditingTaskId(null);
+    onChatUpdate(chatId, { title: newTitle });
+    setEditingChatId(null);
   };
 
-  const handleBlur = (taskId: string, newTitle: string) => {
-    handleEditSubmit(taskId, newTitle);
+  const handleBlur = (chatId: string, newTitle: string) => {
+    handleEditSubmit(chatId, newTitle);
   };
 
   return (
     <div className="h-full flex flex-col bg-gray-900/80 backdrop-blur-sm fixed inset-0">
       <div className="p-4 border-b border-gray-800 flex justify-end sticky top-0 z-10 bg-gray-900/80 backdrop-blur-sm">
         <button
-          onClick={() => onTaskSelect(null)}
+          onClick={() => onChatSelect(null)}
           className="p-2 hover:bg-gray-800 rounded-lg transition-colors text-gray-400 hover:text-white"
         >
           <FaPlus className="w-5 h-5" />
         </button>
       </div>
       <div className="flex-1 overflow-y-auto p-4 pt-8 relative">
-        {tasks.length === 0 ? (
+        {chats.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-gray-500">
             <FaInbox className="w-12 h-12 mb-4" />
-            <p className="text-lg">No tasks yet</p>
-            <p className="text-sm mt-2">Create a new task to get started</p>
+            <p className="text-lg">No chats yet</p>
+            <p className="text-sm mt-2">Create a new chat to get started</p>
           </div>
         ) : (
-          [...tasks]
+          [...chats]
             .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-            .map((task) => (
+            .map((chat) => (
               <motion.div
-                key={task.id}
+                key={chat.id}
                 className={`mb-3 p-3 rounded-lg cursor-pointer transition-colors relative group ${
-                  selectedTaskId === task.id
+                  selectedChatId === chat.id
                     ? "bg-blue-500/20 border border-blue-500/50"
                     : "bg-gray-800/50 border border-gray-700/50 hover:bg-gray-800/80"
                 }`}
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  if (editingTaskId !== task.id) {
-                    onTaskSelect(task.id);
+                  if (editingChatId !== chat.id) {
+                    onChatSelect(chat.id);
                   }
                 }}
                 whileHover={{ scale: 1.02 }}
@@ -83,7 +83,7 @@ export default function TaskList({
                     className="p-1.5 text-gray-400 hover:text-blue-400"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleEditClick(e, task);
+                      handleEditClick(e, chat);
                     }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -94,7 +94,7 @@ export default function TaskList({
                     className="p-1.5 text-gray-400 hover:text-red-400"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onTaskDelete(task.id);
+                      onChatDelete(chat.id);
                     }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -103,42 +103,31 @@ export default function TaskList({
                   </motion.button>
                 </div>
 
-                {editingTaskId === task.id ? (
+                {editingChatId === chat.id ? (
                   <input
                     type="text"
                     value={editingTitle}
                     onChange={(e) => setEditingTitle(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        handleEditSubmit(task.id, editingTitle);
+                        handleEditSubmit(chat.id, editingTitle);
                       } else if (e.key === "Escape") {
-                        setEditingTaskId(null);
+                        setEditingChatId(null);
                       }
                     }}
-                    onBlur={() => handleBlur(task.id, editingTitle)}
+                    onBlur={() => handleBlur(chat.id, editingTitle)}
                     className="w-full bg-gray-700 text-white rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     autoFocus
                   />
                 ) : (
                   <div className="pr-6">
-                    <h3 className="text-white font-medium">{task.title}</h3>
+                    <h3 className="text-white font-medium">{chat.title}</h3>
                   </div>
                 )}
                 <div className="mt-2 flex justify-between items-center">
                   <div className="text-xs text-gray-500">
-                    {new Date(task.createdAt).toLocaleString()}
+                    {new Date(chat.createdAt).toLocaleString()}
                   </div>
-                  <span
-                    className={`px-2 py-1 text-xs rounded-full ${
-                      task.status === "completed"
-                        ? "bg-green-500/20 text-green-400"
-                        : task.status === "in_progress"
-                          ? "bg-blue-500/20 text-blue-400"
-                          : "bg-yellow-500/20 text-yellow-400"
-                    }`}
-                  >
-                    {task.status.charAt(0).toUpperCase() + task.status.slice(1)}
-                  </span>
                 </div>
               </motion.div>
             ))

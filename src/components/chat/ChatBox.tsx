@@ -1,19 +1,19 @@
 "use client";
 
-import { useTaskStore } from "@/hooks/store/useTaskStore";
+import { useChatStore } from "@/hooks/store/useTaskStore";
 import { useChat } from "@ai-sdk/react";
 import { useEffect, useRef, useState } from "react";
 import { CallModal } from "./CallModal";
 import { ChatInput } from "./ChatInput";
 import { MessageList } from "./MessageList";
-import { TaskSelection } from "./TaskSelection";
+import { ChatSelection } from "./ChatSelection";
 
 // 主组件
 export default function ChatBox() {
-  const { selectedTaskId, tasks, setTasks, setSelectedTaskId } = useTaskStore();
+  const { selectedChatId, chats, setChats, setSelectedChatId } = useChatStore();
   const { messages, input, handleInputChange, handleSubmit, setMessages } = useChat({
     maxSteps: 5,
-    id: selectedTaskId || "default",
+    id: selectedChatId || "default",
     initialMessages: [],
   });
   const [isCallActive, setIsCallActive] = useState(false);
@@ -32,8 +32,8 @@ export default function ChatBox() {
   };
 
   useEffect(() => {
-    if (selectedTaskId) {
-      const savedMessages = localStorage.getItem(`chat-${selectedTaskId}`);
+    if (selectedChatId) {
+      const savedMessages = localStorage.getItem(`chat-${selectedChatId}`);
       if (savedMessages) {
         try {
           const parsedMessages = JSON.parse(savedMessages);
@@ -52,33 +52,32 @@ export default function ChatBox() {
     } else {
       setMessages([]);
     }
-  }, [selectedTaskId, setMessages]);
+  }, [selectedChatId, setMessages]);
 
   useEffect(() => {
-    if (selectedTaskId && messages.length > 0) {
+    if (selectedChatId && messages.length > 0) {
       try {
-        localStorage.setItem(`chat-${selectedTaskId}`, JSON.stringify(messages));
+        localStorage.setItem(`chat-${selectedChatId}`, JSON.stringify(messages));
       } catch (error) {
         console.error("Error saving messages:", error);
       }
     }
-  }, [messages, selectedTaskId]);
+  }, [messages, selectedChatId]);
 
-  const handleCreateTask = (type: "food" | "hospital") => {
-    const newTask = {
+  const handleCreateChat = (type: "food" | "hospital") => {
+    const newChat = {
       id: Date.now().toString(),
-      title: type === "food" ? "Food Delivery Task" : "Hospital Registration Task",
+      title: type === "food" ? "Food Delivery Chat" : "Hospital Registration Chat",
       description: type === "food" ? "Order food delivery service" : "Book hospital appointment",
-      status: "pending" as const,
       createdAt: new Date().toISOString(),
     };
 
-    setTasks([...tasks, newTask]);
-    setSelectedTaskId(newTask.id);
+    setChats([...chats, newChat]);
+    setSelectedChatId(newChat.id);
   };
 
-  if (!selectedTaskId) {
-    return <TaskSelection onCreateTask={handleCreateTask} />;
+  if (!selectedChatId) {
+    return <ChatSelection onCreateChat={handleCreateChat} />;
   }
 
   return (

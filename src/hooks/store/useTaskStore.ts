@@ -1,32 +1,32 @@
 "use client";
-import { Task } from "@/types";
+import { Chat } from "@/types";
 import { create } from "zustand";
 
-interface TaskState {
-  tasks: Task[];
-  selectedTaskId: string | null;
-  setTasks: (tasks: Task[]) => void;
-  setSelectedTaskId: (taskId: string | null) => void;
+interface ChatState {
+  chats: Chat[];
+  selectedChatId: string | null;
+  setChats: (chats: Chat[]) => void;
+  setSelectedChatId: (chatId: string | null) => void;
 }
 
-export const useTaskStore = create<TaskState>((set) => ({
-  tasks: [],
-  selectedTaskId: null,
-  setTasks: (tasks) => {
-    set({ tasks });
+export const useChatStore = create<ChatState>((set) => ({
+  chats: [],
+  selectedChatId: null,
+  setChats: (chats) => {
+    set({ chats });
     // 只在客户端保存到 localStorage
     if (typeof window !== "undefined") {
-      localStorage.setItem("tasks", JSON.stringify(tasks));
+      localStorage.setItem("chats", JSON.stringify(chats));
     }
   },
-  setSelectedTaskId: (taskId) => {
-    set({ selectedTaskId: taskId });
+  setSelectedChatId: (chatId) => {
+    set({ selectedChatId: chatId });
     // 只在客户端保存到 localStorage
     if (typeof window !== "undefined") {
-      if (taskId) {
-        localStorage.setItem("selectedTaskId", taskId);
+      if (chatId) {
+        localStorage.setItem("selectedChatId", chatId);
       } else {
-        localStorage.removeItem("selectedTaskId");
+        localStorage.removeItem("selectedChatId");
       }
     }
   },
@@ -34,14 +34,14 @@ export const useTaskStore = create<TaskState>((set) => ({
 
 // 在客户端初始化时加载数据
 if (typeof window !== "undefined") {
-  const savedTasks = localStorage.getItem("tasks");
-  const savedSelectedTaskId = localStorage.getItem("selectedTaskId");
+  const savedChats = localStorage.getItem("chats");
+  const savedSelectedChatId = localStorage.getItem("selectedChatId");
 
-  if (savedTasks) {
-    useTaskStore.getState().setTasks(JSON.parse(savedTasks));
+  if (savedChats) {
+    useChatStore.getState().setChats(JSON.parse(savedChats));
   }
 
-  if (savedSelectedTaskId) {
-    useTaskStore.getState().setSelectedTaskId(savedSelectedTaskId);
+  if (savedSelectedChatId) {
+    useChatStore.getState().setSelectedChatId(savedSelectedChatId);
   }
 }

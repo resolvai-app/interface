@@ -2,66 +2,65 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import TaskList from "@/components/task/TaskList";
+import ChatList from "@/components/chat/ChatList";
 import ChatBox from "@/components/chat/ChatBox";
-import { useTaskStore } from "@/hooks/store/useTaskStore";
-import { useChatStore } from "@/hooks/store/useChatStore";
+import { useChatStore } from "@/hooks/store/useTaskStore";
 import Link from "next/link";
-import { FaTasks, FaHome } from "react-icons/fa";
+import { FaComments, FaHome } from "react-icons/fa";
 import { v4 as uuidv4 } from "uuid";
-import { Task } from "@/types";
+import { Chat } from "@/types";
 
-export default function TaskPage() {
-  const [isTaskListVisible, setIsTaskListVisible] = useState(false);
-  const { tasks, setTasks, selectedTaskId, setSelectedTaskId } = useTaskStore();
-  const { setMessages } = useChatStore();
+export default function ChatPage() {
+  const [isChatListVisible, setIsChatListVisible] = useState(false);
+  const { chats, setChats, selectedChatId, setSelectedChatId } = useChatStore();
+  // 这里假设 useChatStore 里有 setMessages
+  // const { setMessages } = useChatStore();
 
   // 检测是否为移动设备
   useEffect(() => {
     const isMobile = window.innerWidth < 768;
-    setIsTaskListVisible(!isMobile);
+    setIsChatListVisible(!isMobile);
   }, []);
 
   // 自动选中最新创建的任务
   useEffect(() => {
-    if (tasks.length > 0 && !selectedTaskId) {
-      const latestTask = tasks.reduce((latest, current) => {
+    if (chats.length > 0 && !selectedChatId) {
+      const latestChat = chats.reduce((latest, current) => {
         return new Date(current.createdAt) > new Date(latest.createdAt) ? current : latest;
       });
-      setSelectedTaskId(latestTask.id);
+      setSelectedChatId(latestChat.id);
     }
-  }, [tasks, selectedTaskId, setSelectedTaskId]);
+  }, [chats, selectedChatId, setSelectedChatId]);
 
-  const handleTaskSelect = (taskId: string | null) => {
-    if (taskId === null) {
-      // 创建新任务
-      const newTask: Task = {
+  const handleChatSelect = (chatId: string | null) => {
+    if (chatId === null) {
+      // 创建新会话
+      const newChat: Chat = {
         id: uuidv4(),
-        title: "New Task",
-        description: "Click to edit task details",
-        status: "pending",
+        title: "New Chat",
+        description: "Click to edit chat details",
         createdAt: new Date().toISOString(),
       };
-      setTasks([...tasks, newTask]);
-      setSelectedTaskId(newTask.id);
-      setMessages([]);
+      setChats([...chats, newChat]);
+      setSelectedChatId(newChat.id);
+      // setMessages([]); // 如有 setMessages
     } else {
-      setSelectedTaskId(taskId);
+      setSelectedChatId(chatId);
     }
   };
 
-  const handleTaskDelete = (taskId: string) => {
-    const updatedTasks = tasks.filter((task) => task.id !== taskId);
-    setTasks(updatedTasks);
-    if (selectedTaskId === taskId) {
-      setSelectedTaskId(null);
-      setMessages([]);
+  const handleChatDelete = (chatId: string) => {
+    const updatedChats = chats.filter((chat) => chat.id !== chatId);
+    setChats(updatedChats);
+    if (selectedChatId === chatId) {
+      setSelectedChatId(null);
+      // setMessages([]); // 如有 setMessages
     }
   };
 
-  const handleTaskUpdate = (taskId: string, updates: Partial<Task>) => {
-    const updatedTasks = tasks.map((task) => (task.id === taskId ? { ...task, ...updates } : task));
-    setTasks(updatedTasks);
+  const handleChatUpdate = (chatId: string, updates: Partial<Chat>) => {
+    const updatedChats = chats.map((chat) => (chat.id === chatId ? { ...chat, ...updates } : chat));
+    setChats(updatedChats);
   };
 
   return (
@@ -69,8 +68,8 @@ export default function TaskPage() {
       <div className="fixed top-0 left-0 right-0 h-16 bg-gray-900/80 backdrop-blur-md border-b border-gray-800 z-40">
         <div className="h-full flex items-center justify-between px-4">
           <div className="flex items-center space-x-2">
-            <FaTasks className="w-6 h-6" />
-            <h1 className="text-xl font-semibold">Task Manager</h1>
+            <FaComments className="w-6 h-6" />
+            <h1 className="text-xl font-semibold">Chat Manager</h1>
           </div>
           <Link href="/" className="p-2 hover:bg-gray-800 rounded-lg transition-colors">
             <FaHome className="w-5 h-5" />
@@ -80,7 +79,7 @@ export default function TaskPage() {
 
       <div className="relative pt-16">
         <AnimatePresence>
-          {isTaskListVisible && (
+          {isChatListVisible && (
             <motion.div
               initial={{ x: -320 }}
               animate={{ x: 0 }}
@@ -88,12 +87,12 @@ export default function TaskPage() {
               transition={{ type: "spring", damping: 20 }}
               className="fixed top-16 left-0 w-80 h-[calc(100vh-4rem)] bg-gray-900/80 backdrop-blur-md border-r border-gray-800 z-50"
             >
-              <TaskList
-                tasks={tasks}
-                selectedTaskId={selectedTaskId}
-                onTaskSelect={handleTaskSelect}
-                onTaskDelete={handleTaskDelete}
-                onTaskUpdate={handleTaskUpdate}
+              <ChatList
+                chats={chats}
+                selectedChatId={selectedChatId}
+                onChatSelect={handleChatSelect}
+                onChatDelete={handleChatDelete}
+                onChatUpdate={handleChatUpdate}
               />
             </motion.div>
           )}
@@ -101,7 +100,7 @@ export default function TaskPage() {
 
         {/* 收缩按钮 */}
         <button
-          onClick={() => setIsTaskListVisible(!isTaskListVisible)}
+          onClick={() => setIsChatListVisible(!isChatListVisible)}
           className="fixed left-4 top-20 z-50 p-2 bg-gray-800 rounded-full text-gray-300 hover:text-white transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,14 +108,14 @@ export default function TaskPage() {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d={isTaskListVisible ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"}
+              d={isChatListVisible ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"}
             />
           </svg>
         </button>
 
         <motion.div
           className={`h-[calc(100vh-4rem)] transition-all duration-300 ${
-            isTaskListVisible ? "md:ml-80" : ""
+            isChatListVisible ? "md:ml-80" : ""
           }`}
         >
           <ChatBox />

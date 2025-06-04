@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "AI Voice Assistant",
-  description: "AI-powered voice assistant with speech recognition and task management",
+  description: "AI-powered voice assistant with speech recognition and chat management",
   icons: {
     icon: "/favicon.svg",
   },

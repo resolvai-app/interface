@@ -65,7 +65,7 @@ export default function Home() {
                 </motion.a>
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Link
-                    href="/task"
+                    href="/chat"
                     className="px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors whitespace-nowrap"
                   >
                     Try Now
@@ -118,7 +118,7 @@ export default function Home() {
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
                 <Link
-                  href="/task"
+                  href="/chat"
                   className="px-8 py-3 bg-blue-500 text-white rounded-full text-lg hover:bg-blue-600 transition-colors inline-block"
                 >
                   Try Now
@@ -239,7 +239,7 @@ export default function Home() {
               >
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Link
-                    href="/task"
+                    href="/chat"
                     className="px-8 py-3 bg-blue-500 text-white rounded-full text-lg hover:bg-blue-600 transition-colors inline-block"
                   >
                     Start Experience
@@ -282,7 +282,7 @@ export default function Home() {
                   </li>
                   <li>
                     <Link
-                      href="/task"
+                      href="/chat"
                       className="text-gray-400 hover:text-blue-400 transition-colors"
                     >
                       Get Started
