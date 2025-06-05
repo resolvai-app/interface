@@ -51,3 +51,14 @@ export function base64ToArrayBuffer(base64: string) {
   }
   return bytes.buffer;
 }
+
+export function getApiUrl() {
+  return process.env.NEXT_PUBLIC_AGENT_DOMAIN
+    ? `https://${process.env.NEXT_PUBLIC_AGENT_DOMAIN}`
+    : "http://localhost:3000";
+}
+export function getWsUrl() {
+  return process.env.NEXT_PUBLIC_AGENT_DOMAIN
+    ? `wss://${process.env.NEXT_PUBLIC_AGENT_DOMAIN}`
+    : "ws://localhost:3000";
+}

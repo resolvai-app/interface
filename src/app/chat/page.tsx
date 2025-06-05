@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaComments, FaHome } from "react-icons/fa";
-
+import { getApiUrl } from "@/lib/utils";
 export default function ChatPage() {
   const [isChatListVisible, setIsChatListVisible] = useState(false);
   const { chats, setChats, selectedChatId, setSelectedChatId } = useChatStore();
@@ -31,7 +31,7 @@ export default function ChatPage() {
 
   const handleChatSelect = (chatId: string | null) => {
     if (chatId === null) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat`, {
+      fetch(`${getApiUrl()}/chat`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -56,7 +56,7 @@ export default function ChatPage() {
   };
 
   const handleChatDelete = (chatId: string) => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/${chatId}`, {
+    fetch(`${getApiUrl()}/chat/${chatId}`, {
       method: "DELETE",
     }).then(() => {
       const updatedChats = chats.filter((chat) => chat.id !== chatId);
@@ -68,7 +68,7 @@ export default function ChatPage() {
   };
 
   const handleChatUpdate = (chatId: string, updates: Partial<Chat>) => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat`, {
+    fetch(`${getApiUrl()}/chat`, {
       headers: {
         "Content-Type": "application/json",
       },

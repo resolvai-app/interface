@@ -6,6 +6,7 @@ import { CallModal } from "./CallModal";
 import { ChatInput } from "./ChatInput";
 import { ChatSelection } from "./ChatSelection";
 import { MessageList } from "./MessageList";
+import { getApiUrl } from "@/lib/utils";
 
 // 主组件
 export default function ChatBox() {
@@ -64,7 +65,7 @@ export default function ChatBox() {
   }, [messages, selectedChatId]);
 
   const handleCreateChat = (type: "food" | "hospital") => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat`, {
+    fetch(`${getApiUrl()}/chat`, {
       headers: {
         "Content-Type": "application/json",
       },
