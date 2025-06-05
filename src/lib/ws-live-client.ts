@@ -94,6 +94,7 @@ export class WssLiveClient extends EventEmitter<LiveClientEventTypes> {
     if (!this.ws) {
       return false;
     }
+    this.send({ event: "stop", streamSid: this._streamId }, true);
     this.ws.close();
     this.ws = null;
     this._status = "disconnected";
@@ -103,6 +104,21 @@ export class WssLiveClient extends EventEmitter<LiveClientEventTypes> {
   }
 
   protected onopen() {
+    this.send(
+      {
+        event: "start",
+        streamSid: this._streamId,
+        start: {
+          mediaFormat: {
+            encoding: "audio/pcm",
+            sampleRate: 16000,
+            channels: 1,
+          },
+          tracks: ["user_audio_input"],
+        },
+      },
+      true
+    );
     this.log("client.open", "Connected");
     this.emit("open");
   }
@@ -177,7 +193,7 @@ export class WssLiveClient extends EventEmitter<LiveClientEventTypes> {
    */
   send(parts: any | any[], turnComplete: boolean = true) {
     if (!this.ws) return;
-    this.ws.send(JSON.stringify({ turns: parts, turnComplete }));
+    this.ws.send(JSON.stringify(parts));
     this.log(`client.send`, {
       turns: Array.isArray(parts) ? parts : [parts],
       turnComplete,
