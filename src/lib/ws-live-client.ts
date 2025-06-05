@@ -13,6 +13,8 @@ export interface LiveClientEventTypes {
   close: (event: CloseEvent) => void;
   // Emitted when content is received from the server
   content: (data: any) => void;
+  // Emitted when an error occurs
+  error: (error: Event) => void;
   // Emitted when the server interrupts the current generation
   interrupted: () => void;
   // Emitted for logging events
@@ -73,7 +75,7 @@ export class WssLiveClient extends EventEmitter<LiveClientEventTypes> {
     try {
       // 假设 WebSocket 地址由 config 提供
       const wsUrl = this.config?.url ?? "ws://localhost:3000";
-      this.ws = new WebSocket(`${wsUrl}/user/${this._streamId}`);
+      this.ws = new WebSocket(`${wsUrl}/user`);
       this.ws.onopen = this.onopen;
       this.ws.onmessage = (event) => this.onmessage(event);
       this.ws.onerror = this.onerror;
@@ -107,6 +109,7 @@ export class WssLiveClient extends EventEmitter<LiveClientEventTypes> {
 
   protected onerror(e: Event) {
     this.log("server.error", (e as ErrorEvent).message);
+    this.emit("error", e);
   }
 
   protected onclose(e: CloseEvent) {
@@ -115,7 +118,34 @@ export class WssLiveClient extends EventEmitter<LiveClientEventTypes> {
   }
 
   protected async onmessage(message: MessageEvent) {
-    this.emit("audio", base64ToArrayBuffer(message.data));
+    const messageData = JSON.parse(message.data) as {
+      event: string;
+      media?: {
+        mimeType: string;
+        payload: string;
+      };
+      content?: string;
+    };
+    if (messageData.media) {
+      this.emit("audio", base64ToArrayBuffer(messageData.media.payload));
+    }
+    if (messageData.content) {
+      this.emit("content", messageData.content);
+    }
+    switch (messageData.event) {
+      case "turn_complete":
+        this.emit("turncomplete");
+        break;
+      case "setup_complete":
+        this.emit("setupcomplete");
+        break;
+      case "interrupted":
+        this.emit("interrupted");
+        break;
+      default:
+        break;
+    }
+
     this.log(`server.content`, message.data);
   }
 
