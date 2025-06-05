@@ -1,39 +1,37 @@
 "use client";
-import { create } from "zustand";
 import { Message } from "@ai-sdk/react";
+import { create } from "zustand";
 
 interface ChatStore {
-  messages: Message[];
-  setMessages: (messages: Message[]) => void;
-  addMessage: (message: Message) => void;
-  loadMessages: (chatId: string) => void;
+  loadMessages: (chatId: string, setMessages: (messages: Message[]) => void) => void;
   saveMessages: (chatId: string, messages: Message[]) => void;
 }
 
 export const useChatStore = create<ChatStore>((set) => ({
-  messages: [],
-  setMessages: (messages) => set({ messages }),
-  addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),
-  loadMessages: (chatId) => {
+  loadMessages: (chatId, setMessages) => {
     if (typeof window === "undefined") return;
     const savedMessages = localStorage.getItem(`chat-${chatId}`);
+
     if (savedMessages) {
       try {
         const parsedMessages = JSON.parse(savedMessages);
+
         if (Array.isArray(parsedMessages) && parsedMessages.length > 0) {
-          set({ messages: parsedMessages });
+          console.log("loadMessages", chatId, parsedMessages);
+          setMessages(parsedMessages);
         } else {
-          set({ messages: [] });
+          setMessages([]);
         }
       } catch (error) {
         console.error("Error parsing saved messages:", error);
-        set({ messages: [] });
+        setMessages([]);
       }
     } else {
-      set({ messages: [] });
+      setMessages([]);
     }
   },
   saveMessages: (chatId, messages) => {
+    console.log("saveMessages", chatId, messages);
     if (typeof window === "undefined") return;
     try {
       localStorage.setItem(`chat-${chatId}`, JSON.stringify(messages));

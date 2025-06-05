@@ -35,7 +35,7 @@ export default function ChatBox() {
 
   useEffect(() => {
     if (selectedChatId) {
-      loadMessages(selectedChatId);
+      loadMessages(selectedChatId, setMessages);
     } else {
       setMessages([]);
     }
