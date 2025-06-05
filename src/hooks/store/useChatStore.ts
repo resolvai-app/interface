@@ -7,7 +7,7 @@ interface ChatStore {
   saveMessages: (chatId: string, messages: Message[]) => void;
 }
 
-export const useChatStore = create<ChatStore>((set) => ({
+export const useChatStore = create<ChatStore>(() => ({
   loadMessages: (chatId, setMessages) => {
     if (typeof window === "undefined") return;
     const savedMessages = localStorage.getItem(`chat-${chatId}`);
