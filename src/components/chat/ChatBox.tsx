@@ -4,8 +4,8 @@ import { useChat } from "@ai-sdk/react";
 import { useEffect, useRef, useState } from "react";
 import { CallModal } from "./CallModal";
 import { ChatInput } from "./ChatInput";
-import { MessageList } from "./MessageList";
 import { ChatSelection } from "./ChatSelection";
+import { MessageList } from "./MessageList";
 
 // 主组件
 export default function ChatBox() {
@@ -64,14 +64,25 @@ export default function ChatBox() {
   }, [messages, selectedChatId]);
 
   const handleCreateChat = (type: "food" | "hospital") => {
-    const newChat = {
-      title: type === "food" ? "Food Delivery Chat" : "Hospital Registration Chat",
-      description: type === "food" ? "Order food delivery service" : "Book hospital appointment",
-      createdAt: new Date().toISOString(),
-    };
-
-    setChats([...chats, newChat]);
-    setSelectedChatId(newChat.id);
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({
+        title: type === "food" ? "Food Delivery Chat" : "Hospital Registration Chat",
+        description: type === "food" ? "Order food delivery service" : "Book hospital appointment",
+        state: {
+          model: "gemini-2.0-flash-live-001",
+          voice: "alloy",
+        },
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setChats([...chats, data.result]);
+        setSelectedChatId(data.result.id);
+      });
   };
 
   if (!selectedChatId) {

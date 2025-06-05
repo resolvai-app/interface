@@ -12,8 +12,6 @@ import { FaComments, FaHome } from "react-icons/fa";
 export default function ChatPage() {
   const [isChatListVisible, setIsChatListVisible] = useState(false);
   const { chats, setChats, selectedChatId, setSelectedChatId } = useChatStore();
-  // 这里假设 useChatStore 里有 setMessages
-  // const { setMessages } = useChatStore();
 
   // 检测是否为移动设备
   useEffect(() => {
@@ -34,36 +32,54 @@ export default function ChatPage() {
   const handleChatSelect = (chatId: string | null) => {
     if (chatId === null) {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
         method: "POST",
         body: JSON.stringify({
           title: "New Chat",
           description: "Click to edit chat details",
-          createdAt: new Date().toISOString(),
+          state: {
+            model: "gemini-2.0-flash-live-001",
+            voice: "alloy",
+          },
         }),
       })
         .then((res) => res.json())
         .then((data) => {
-          setChats([...chats, data]);
-          setSelectedChatId(data.id);
+          setChats([...chats, data.result]);
+          setSelectedChatId(data.result.id);
         });
-      // setMessages([]); // 如有 setMessages
     } else {
       setSelectedChatId(chatId);
     }
   };
 
   const handleChatDelete = (chatId: string) => {
-    const updatedChats = chats.filter((chat) => chat.id !== chatId);
-    setChats(updatedChats);
-    if (selectedChatId === chatId) {
-      setSelectedChatId(null);
-      // setMessages([]); // 如有 setMessages
-    }
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/${chatId}`, {
+      method: "DELETE",
+    }).then(() => {
+      const updatedChats = chats.filter((chat) => chat.id !== chatId);
+      setChats(updatedChats);
+      if (selectedChatId === chatId) {
+        setSelectedChatId(null);
+      }
+    });
   };
 
   const handleChatUpdate = (chatId: string, updates: Partial<Chat>) => {
-    const updatedChats = chats.map((chat) => (chat.id === chatId ? { ...chat, ...updates } : chat));
-    setChats(updatedChats);
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ id: chatId, ...updates }),
+    }).then(() => {
+      const updatedChats = chats.map((chat) =>
+        chat.id === chatId ? { ...chat, ...updates } : chat
+      );
+      setChats(updatedChats);
+    });
   };
 
   return (
