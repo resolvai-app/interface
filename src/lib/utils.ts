@@ -54,8 +54,8 @@ export function base64ToArrayBuffer(base64: string) {
 
 export function getApiUrl() {
   return process.env.NEXT_PUBLIC_AGENT_DOMAIN
-    ? `https://${process.env.NEXT_PUBLIC_AGENT_DOMAIN}`
-    : "http://localhost:3000";
+    ? `https://${process.env.NEXT_PUBLIC_AGENT_DOMAIN}/api`
+    : "http://localhost:3000/api";
 }
 export function getWsUrl() {
   return process.env.NEXT_PUBLIC_AGENT_DOMAIN

@@ -1,16 +1,17 @@
 "use client";
-import { useChatStore } from "@/hooks/store/useTaskStore";
-import { useChat } from "@ai-sdk/react";
+import { useChatListStore } from "@/hooks/store/useChatListStore";
+import { useChat, Message } from "@ai-sdk/react";
 import { useEffect, useRef, useState } from "react";
 import { CallModal } from "./CallModal";
 import { ChatInput } from "./ChatInput";
 import { ChatSelection } from "./ChatSelection";
 import { MessageList } from "./MessageList";
 import { getApiUrl } from "@/lib/utils";
+import { useChatStore } from "@/hooks/store/useChatStore";
 
 // 主组件
 export default function ChatBox() {
-  const { selectedChatId, chats, setChats, setSelectedChatId } = useChatStore();
+  const { selectedChatId, chats, setChats, setSelectedChatId } = useChatListStore();
   const { messages, input, handleInputChange, handleSubmit, setMessages } = useChat({
     maxSteps: 5,
     id: selectedChatId || "default",
@@ -18,6 +19,7 @@ export default function ChatBox() {
   });
   const [isCallActive, setIsCallActive] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const { loadMessages, saveMessages } = useChatStore();
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -33,36 +35,17 @@ export default function ChatBox() {
 
   useEffect(() => {
     if (selectedChatId) {
-      const savedMessages = localStorage.getItem(`chat-${selectedChatId}`);
-      if (savedMessages) {
-        try {
-          const parsedMessages = JSON.parse(savedMessages);
-          if (Array.isArray(parsedMessages) && parsedMessages.length > 0) {
-            setMessages(parsedMessages);
-          } else {
-            setMessages([]);
-          }
-        } catch (error) {
-          console.error("Error parsing saved messages:", error);
-          setMessages([]);
-        }
-      } else {
-        setMessages([]);
-      }
+      loadMessages(selectedChatId);
     } else {
       setMessages([]);
     }
-  }, [selectedChatId, setMessages]);
+  }, [selectedChatId, loadMessages, setMessages]);
 
   useEffect(() => {
     if (selectedChatId && messages.length > 0) {
-      try {
-        localStorage.setItem(`chat-${selectedChatId}`, JSON.stringify(messages));
-      } catch (error) {
-        console.error("Error saving messages:", error);
-      }
+      saveMessages(selectedChatId, messages as Message[]);
     }
-  }, [messages, selectedChatId]);
+  }, [messages, selectedChatId, saveMessages]);
 
   const handleCreateChat = (type: "food" | "hospital") => {
     fetch(`${getApiUrl()}/chat`, {

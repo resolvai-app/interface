@@ -2,7 +2,7 @@
 
 import ChatBox from "@/components/chat/ChatBox";
 import ChatList from "@/components/chat/ChatList";
-import { useChatStore } from "@/hooks/store/useTaskStore";
+import { useChatListStore } from "@/hooks/store/useChatListStore";
 import { Chat } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
@@ -11,7 +11,7 @@ import { FaComments, FaHome } from "react-icons/fa";
 import { getApiUrl } from "@/lib/utils";
 export default function ChatPage() {
   const [isChatListVisible, setIsChatListVisible] = useState(false);
-  const { chats, setChats, selectedChatId, setSelectedChatId } = useChatStore();
+  const { chats, setChats, selectedChatId, setSelectedChatId } = useChatListStore();
 
   // 检测是否为移动设备
   useEffect(() => {
