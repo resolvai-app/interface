@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import Link from "next/link";
+import GalaxyBackground from "@/components/GalaxyBackground";
 
 export default function Home() {
   const { scrollYProgress } = useScroll();
@@ -15,15 +16,8 @@ export default function Home() {
   const springScale = useSpring(scale, springConfig);
 
   return (
-    <main
-      className="min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden bg-gray-900"
-      style={{
-        backgroundImage: `
-          radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.7) 100%),
-          url("https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2070&auto=format&fit=crop")
-        `,
-      }}
-    >
+    <main className="min-h-screen bg-black relative overflow-hidden">
+      <GalaxyBackground />
       {/* Dynamic background elements */}
       <motion.div className="absolute inset-0" style={{ scale: springScale }}>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/10 to-blue-900/20" />
@@ -44,7 +38,7 @@ export default function Home() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                AI Caller
+                ResolvAI
               </motion.div>
               <div className="flex items-center space-x-6">
                 <motion.a
