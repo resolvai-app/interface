@@ -33,7 +33,7 @@ export default function Home() {
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
               <motion.div
-                className="text-2xl font-bold text-blue-400 font-['Long_Cang',cursive]"
+                className="text-2xl font-bold text-white font-['Long_Cang',cursive]"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
@@ -60,7 +60,7 @@ export default function Home() {
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Link
                     href="/chat"
-                    className="px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors whitespace-nowrap"
+                    className="px-6 py-2 bg-gray-500 text-white rounded-full hover:bg-blue-600 transition-colors whitespace-nowrap"
                   >
                     Try Now
                   </Link>
@@ -113,7 +113,7 @@ export default function Home() {
               >
                 <Link
                   href="/chat"
-                  className="px-8 py-3 bg-blue-500 text-white rounded-full text-lg hover:bg-blue-600 transition-colors inline-block"
+                  className="px-8 py-3 bg-white text-black rounded-full text-lg hover:bg-blue-600 transition-colors inline-block"
                 >
                   Try Now
                 </Link>
@@ -234,7 +234,7 @@ export default function Home() {
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Link
                     href="/chat"
-                    className="px-8 py-3 bg-blue-500 text-white rounded-full text-lg hover:bg-blue-600 transition-colors inline-block"
+                    className="px-8 py-3 bg-white text-black rounded-full text-lg hover:bg-blue-600 transition-colors inline-block"
                   >
                     Start Experience
                   </Link>
@@ -255,37 +255,34 @@ export default function Home() {
               transition={{ duration: 0.5 }}
             >
               <div>
-                <h3 className="text-xl font-bold mb-4 text-blue-400">AI Call Assistant</h3>
+                <h3 className="text-xl font-bold mb-4 text-white">AI Call Assistant</h3>
                 <p className="text-gray-400">Making every call intelligent and warm</p>
               </div>
               <div>
-                <h3 className="text-xl font-bold mb-4 text-blue-400">Quick Links</h3>
+                <h3 className="text-xl font-bold mb-4 text-white">Quick Links</h3>
                 <ul className="space-y-2">
                   <li>
                     <a
                       href="#features"
-                      className="text-gray-400 hover:text-blue-400 transition-colors"
+                      className="text-gray-400 hover:text-white transition-colors"
                     >
                       Features
                     </a>
                   </li>
                   <li>
-                    <a href="#demo" className="text-gray-400 hover:text-blue-400 transition-colors">
+                    <a href="#demo" className="text-gray-400 hover:text-white transition-colors">
                       Demo
                     </a>
                   </li>
                   <li>
-                    <Link
-                      href="/chat"
-                      className="text-gray-400 hover:text-blue-400 transition-colors"
-                    >
+                    <Link href="/chat" className="text-gray-400 hover:text-white transition-colors">
                       Get Started
                     </Link>
                   </li>
                 </ul>
               </div>
               <div>
-                <h3 className="text-xl font-bold mb-4 text-blue-400">Contact Us</h3>
+                <h3 className="text-xl font-bold mb-4 text-white">Contact Us</h3>
                 <ul className="space-y-2">
                   <li className="text-gray-400">Email: contact@example.com</li>
                   <li className="text-gray-400">Phone: 400-123-4567</li>
