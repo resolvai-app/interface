@@ -27,7 +27,7 @@ export default function Home() {
       <div className="relative z-10">
         {/* Navigation bar */}
         <motion.nav
-          className="fixed top-0 left-0 right-0 z-50 bg-gray-900/80 backdrop-blur-md border-b border-gray-800"
+          className="fixed top-0 left-0 right-0 z-50 bg-gray-900/50 backdrop-blur-md border-b border-gray-800"
           style={{ y: springY }}
         >
           <div className="container mx-auto px-4 py-4">
@@ -123,7 +123,7 @@ export default function Home() {
         </section>
 
         {/* Features section */}
-        <section id="features" className="py-20 bg-gray-900/90">
+        <section id="features" className="py-20 bg-gray-900/50">
           <div className="container mx-auto px-4">
             <motion.h2
               className="text-4xl font-bold text-center text-white mb-12 font-['Long_Cang',cursive]"
@@ -245,7 +245,7 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="bg-gray-900 text-white py-12 border-t border-gray-800">
+        <footer className="bg-gray-900/50 text-white py-12 border-t border-gray-800">
           <div className="container mx-auto px-4">
             <motion.div
               className="grid grid-cols-1 md:grid-cols-3 gap-8"
