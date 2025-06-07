@@ -33,7 +33,7 @@ export default function ChatPage() {
 
   const handleChatSelect = (chatId: string | null) => {
     if (chatId === null) {
-      fetch(`${getApiUrl()}/chat`, {
+      fetch(`${getApiUrl()}/upsert-chat`, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -58,7 +58,7 @@ export default function ChatPage() {
   };
 
   const handleChatDelete = (chatId: string) => {
-    fetch(`${getApiUrl()}/chat/${chatId}`, {
+    fetch(`${getApiUrl()}/delete-chat/${chatId}`, {
       method: "DELETE",
     }).then(() => {
       const updatedChats = chats.filter((chat) => chat.id !== chatId);
@@ -70,7 +70,7 @@ export default function ChatPage() {
   };
 
   const handleChatUpdate = (chatId: string, updates: Partial<Chat>) => {
-    fetch(`${getApiUrl()}/chat`, {
+    fetch(`${getApiUrl()}/upsert-chat`, {
       headers: {
         "Content-Type": "application/json",
       },

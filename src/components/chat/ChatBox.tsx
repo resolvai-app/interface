@@ -13,6 +13,7 @@ import { useChatStore } from "@/hooks/store/useChatStore";
 export default function ChatBox() {
   const { selectedChatId, chats, setChats, setSelectedChatId } = useChatListStore();
   const { messages, input, handleInputChange, handleSubmit, setMessages } = useChat({
+    api: `${getApiUrl()}/chat`,
     maxSteps: 5,
     id: selectedChatId || "default",
     initialMessages: [],
@@ -48,7 +49,7 @@ export default function ChatBox() {
   }, [messages, selectedChatId, saveMessages]);
 
   const handleCreateChat = (type: "food" | "hospital") => {
-    fetch(`${getApiUrl()}/chat`, {
+    fetch(`${getApiUrl()}/upsert-chat`, {
       headers: {
         "Content-Type": "application/json",
       },

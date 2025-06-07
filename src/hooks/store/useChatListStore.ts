@@ -34,7 +34,7 @@ export const useChatListStore = create<ChatState>((set) => ({
   },
   fetchChats: async () => {
     try {
-      const response = await fetch(`${getApiUrl()}/chat-list`, {
+      const response = await fetch(`${getApiUrl()}/list-chats`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
