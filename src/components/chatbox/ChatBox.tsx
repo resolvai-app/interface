@@ -1,17 +1,16 @@
 "use client";
-import { useChatListStore } from "@/hooks/store/useChatListStore";
-import { useChat, Message } from "@ai-sdk/react";
+import { useChatStateContext } from "@/contexts/ChatStateContext";
+import { getApiUrl } from "@/lib/utils";
+import { Message, useChat } from "@ai-sdk/react";
 import { useEffect, useRef, useState } from "react";
 import { CallModal } from "./CallModal";
 import { ChatInput } from "./ChatInput";
 import { ChatSelection } from "./ChatSelection";
 import { MessageList } from "./MessageList";
-import { getApiUrl } from "@/lib/utils";
-import { useChatStore } from "@/hooks/store/useChatStore";
 
 // 主组件
 export default function ChatBox() {
-  const { selectedChatId, chats, setChats, setSelectedChatId } = useChatListStore();
+  const { selectedChatId, upsertChat, saveMessages, syncMessages } = useChatStateContext();
   const { messages, input, handleInputChange, handleSubmit, setMessages } = useChat({
     api: `${getApiUrl()}/chat`,
     maxSteps: 5,
@@ -20,7 +19,6 @@ export default function ChatBox() {
   });
   const [isCallActive, setIsCallActive] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const { loadMessages, saveMessages } = useChatStore();
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -36,11 +34,11 @@ export default function ChatBox() {
 
   useEffect(() => {
     if (selectedChatId) {
-      loadMessages(selectedChatId, setMessages);
+      syncMessages(selectedChatId, setMessages);
     } else {
       setMessages([]);
     }
-  }, [selectedChatId, loadMessages, setMessages]);
+  }, [selectedChatId, syncMessages, setMessages]);
 
   useEffect(() => {
     if (selectedChatId && messages.length > 0) {
@@ -49,25 +47,14 @@ export default function ChatBox() {
   }, [messages, selectedChatId, saveMessages]);
 
   const handleCreateChat = (type: "food" | "hospital") => {
-    fetch(`${getApiUrl()}/upsert-chat`, {
-      headers: {
-        "Content-Type": "application/json",
+    upsertChat({
+      title: type === "food" ? "Food Delivery Chat" : "Hospital Registration Chat",
+      describe: type === "food" ? "Order food delivery service" : "Book hospital appointment",
+      state: {
+        model: "gemini-2.0-flash-live-001",
+        voice: "alloy",
       },
-      method: "POST",
-      body: JSON.stringify({
-        title: type === "food" ? "Food Delivery Chat" : "Hospital Registration Chat",
-        description: type === "food" ? "Order food delivery service" : "Book hospital appointment",
-        state: {
-          model: "gemini-2.0-flash-live-001",
-          voice: "alloy",
-        },
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setChats([...chats, data.result]);
-        setSelectedChatId(data.result.id);
-      });
+    });
   };
 
   if (!selectedChatId) {

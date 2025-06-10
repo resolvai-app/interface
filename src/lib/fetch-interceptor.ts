@@ -16,7 +16,8 @@ class FetchInterceptor {
   private init() {
     window.fetch = async (...args) => {
       try {
-        const response = await this.originalFetch(...args);
+        const response = await this.originalFetch.apply(window, args);
+
         // 处理HTTP错误
         if (!response.ok) {
           const error: FetchError = new Error(`HTTP error! status: ${response.status}`);

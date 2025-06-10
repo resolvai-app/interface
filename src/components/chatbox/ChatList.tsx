@@ -1,49 +1,37 @@
 "use client";
 
+import { useChatStateContext } from "@/contexts/ChatStateContext";
 import { Chat } from "@/types";
 import { motion } from "framer-motion";
-import { FaTrash, FaInbox, FaPlus, FaEdit } from "react-icons/fa";
 import { useState } from "react";
+import { FaEdit, FaInbox, FaPlus, FaTrash } from "react-icons/fa";
 
-interface ChatListProps {
-  chats: Chat[];
-  selectedChatId: string | null;
-  onChatSelect: (chatId: string | null) => void;
-  onChatDelete: (chatId: string) => void;
-  onChatUpdate: (chatId: string, updates: Partial<Chat>) => void;
-}
-
-export default function ChatList({
-  chats,
-  selectedChatId,
-  onChatSelect,
-  onChatDelete,
-  onChatUpdate,
-}: ChatListProps) {
-  const [editingChatId, setEditingChatId] = useState<string | null>(null);
-  const [editingTitle, setEditingTitle] = useState("");
+export default function ChatList() {
+  const { chats, selectedChatId, setSelectedChatId, upsertChat, deleteChat } =
+    useChatStateContext();
+  const [editingChat, setEditingChat] = useState<Chat | null>(null);
 
   const handleEditClick = (e: React.MouseEvent, chat: Chat) => {
     e.stopPropagation();
-    setEditingChatId(chat.id);
-    setEditingTitle(chat.title);
+    setEditingChat(chat);
   };
 
-  const handleEditSubmit = (chatId: string, newTitle: string) => {
-    if (newTitle.trim() === "") return;
-    onChatUpdate(chatId, { title: newTitle });
-    setEditingChatId(null);
+  const handleEditSubmit = (chat: Chat) => {
+    if (chat.title.trim() === "") return;
+    console.log("handleEditSubmit", chat);
+    upsertChat(chat);
+    setEditingChat(null);
   };
 
-  const handleBlur = (chatId: string, newTitle: string) => {
-    handleEditSubmit(chatId, newTitle);
+  const handleBlur = (chat: Chat) => {
+    handleEditSubmit(chat);
   };
 
   return (
     <div className="h-full flex flex-col bg-gray-900/80 backdrop-blur-sm fixed inset-0">
       <div className="p-4 border-b border-gray-800 flex justify-end sticky top-0 z-10 bg-gray-900/80 backdrop-blur-sm">
         <button
-          onClick={() => onChatSelect(null)}
+          onClick={() => setSelectedChatId(null)}
           className="p-2 hover:bg-gray-800 rounded-lg transition-colors text-gray-400 hover:text-white"
         >
           <FaPlus className="w-5 h-5" />
@@ -70,8 +58,8 @@ export default function ChatList({
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  if (editingChatId !== chat.id) {
-                    onChatSelect(chat.id);
+                  if (editingChat?.id !== chat.id) {
+                    setSelectedChatId(chat.id);
                   }
                 }}
                 whileHover={{ scale: 1.02 }}
@@ -94,7 +82,7 @@ export default function ChatList({
                     className="p-1.5 text-gray-400 hover:text-red-400"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onChatDelete(chat.id);
+                      deleteChat(chat.id);
                     }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -103,19 +91,19 @@ export default function ChatList({
                   </motion.button>
                 </div>
 
-                {editingChatId === chat.id ? (
+                {editingChat?.id === chat.id ? (
                   <input
                     type="text"
-                    value={editingTitle}
-                    onChange={(e) => setEditingTitle(e.target.value)}
+                    value={editingChat.title}
+                    onChange={(e) => setEditingChat({ ...editingChat, title: e.target.value })}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        handleEditSubmit(chat.id, editingTitle);
+                        handleEditSubmit(editingChat);
                       } else if (e.key === "Escape") {
-                        setEditingChatId(null);
+                        setEditingChat(null);
                       }
                     }}
-                    onBlur={() => handleBlur(chat.id, editingTitle)}
+                    onBlur={() => handleBlur(editingChat)}
                     className="w-full bg-gray-700 text-white rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     autoFocus
                   />

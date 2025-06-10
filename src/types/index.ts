@@ -38,6 +38,10 @@ export type ClientContentLog = {
 export type Chat = {
   id: string;
   title: string;
-  description: string;
+  describe: string;
   createdAt: string;
+  state: {
+    model: string;
+    voice: string;
+  };
 };
