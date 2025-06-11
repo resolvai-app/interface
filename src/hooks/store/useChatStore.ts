@@ -5,6 +5,8 @@ import { Message } from "@ai-sdk/react";
 import { create } from "zustand";
 
 interface ChatStore {
+  userId: string;
+  getUserId: () => string;
   // 聊天消息相关
   syncMessages: (chatId: string, setMessages: (messages: Message[]) => void) => void;
   saveMessages: (chatId: string, messages: Message[]) => void;
@@ -21,6 +23,17 @@ interface ChatStore {
 }
 
 export const useChatStore = create<ChatStore>((set, get) => ({
+  userId: "",
+  getUserId: () => {
+    if (typeof window === "undefined") return "";
+    const userId = localStorage.getItem("v2-userId");
+    if (userId) {
+      return userId;
+    }
+    const newUserId = crypto.randomUUID();
+    localStorage.setItem("v2-userId", newUserId);
+    return newUserId;
+  },
   // 聊天消息相关
   syncMessages: (chatId, setMessages) => {
     if (typeof window === "undefined") return;
@@ -62,11 +75,14 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   chats: [],
   fetchChats: async () => {
     try {
-      const response = await fetch(`${getApiUrl()}/list-chats`, {
+      const userId = get().getUserId();
+      console.log("fetchChats", userId);
+      const response = await fetch(`${getApiUrl()}/chat-manager/list`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ userId }),
       });
       if (!response.ok) {
         console.error("Failed to fetch chats");
@@ -83,12 +99,12 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   // 创建聊天
   upsertChat: async (chat) => {
     try {
-      const response = await fetch(`${getApiUrl()}/upsert-chat`, {
+      const response = await fetch(`${getApiUrl()}/chat-manager/upsert`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(chat),
+        body: JSON.stringify({ ...chat, userId: get().getUserId() }),
       });
       if (!response.ok) {
         console.error("Failed to create chat");
@@ -111,7 +127,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   // 删除聊天
   deleteChat: async (chatId) => {
     try {
-      const response = await fetch(`${getApiUrl()}/delete-chat/${chatId}`, {
+      const response = await fetch(`${getApiUrl()}/chat-manager/delete/${chatId}`, {
         method: "DELETE",
       });
       if (!response.ok) {

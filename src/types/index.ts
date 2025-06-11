@@ -37,6 +37,7 @@ export type ClientContentLog = {
  */
 export type Chat = {
   id: string;
+  userId: string;
   title: string;
   describe: string;
   createdAt: string;
