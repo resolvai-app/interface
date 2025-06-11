@@ -41,8 +41,5 @@ export type Chat = {
   title: string;
   describe: string;
   createdAt: string;
-  state: {
-    model: string;
-    voice: string;
-  };
+  state: Record<string, string | number | boolean>;
 };
