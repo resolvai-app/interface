@@ -12,7 +12,7 @@ import { FaComments, FaHome } from "react-icons/fa";
 
 export default function ChatPage() {
   const [isChatListVisible, setIsChatListVisible] = useState(false);
-  const { fetchChats } = useChatStateContext();
+  const { fetchChats, selectedChatId } = useChatStateContext();
 
   useQuery({
     queryKey: ["chats"],
@@ -24,6 +24,10 @@ export default function ChatPage() {
     const isMobile = window.innerWidth < 768;
     setIsChatListVisible(!isMobile);
   }, []);
+
+  useEffect(() => {
+    setIsChatListVisible(!isChatListVisible);
+  }, [selectedChatId]);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white relative">
@@ -71,9 +75,8 @@ export default function ChatPage() {
         </button>
 
         <motion.div
-          className={`h-[calc(100vh-4rem)] transition-all duration-300 ${
-            isChatListVisible ? "md:ml-80" : ""
-          }`}
+          className={`h-[calc(100vh-4rem)] transition-all duration-300 ${isChatListVisible ? "md:ml-80" : ""
+            }`}
         >
           <ChatBox />
         </motion.div>
