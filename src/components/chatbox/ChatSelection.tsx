@@ -3,7 +3,7 @@ import { FaUtensils } from "react-icons/fa";
 import { SiNetflix } from "react-icons/si";
 
 interface ChatSelectionProps {
-  onCreateChat: (type: "food" | "hospital") => void;
+  onCreateChat: (type: "food" | "netflix") => void;
 }
 
 export const ChatSelection = ({ onCreateChat }: ChatSelectionProps) => (
