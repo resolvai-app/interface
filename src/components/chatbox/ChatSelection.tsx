@@ -22,7 +22,7 @@ export const ChatSelection = ({ onCreateChat }: ChatSelectionProps) => (
 
       <button
         className="flex flex-col items-center p-8 bg-gray-800/50 rounded-xl hover:bg-gray-800/80 transition-colors group"
-        onClick={() => onCreateChat("hospital")}
+        onClick={() => onCreateChat("netflix")}
       >
         <SiNetflix className="w-12 h-12 text-red-500 mb-4 group-hover:scale-110 transition-transform" />
         <h3 className="text-xl font-semibold text-white mb-2">Unsubscribe Netflix</h3>
