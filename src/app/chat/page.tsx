@@ -26,7 +26,7 @@ export default function ChatPage() {
   }, []);
 
   useEffect(() => {
-    setIsChatListVisible(!isChatListVisible);
+    setIsChatListVisible(false);
   }, [selectedChatId]);
 
   return (
@@ -75,8 +75,9 @@ export default function ChatPage() {
         </button>
 
         <motion.div
-          className={`h-[calc(100vh-4rem)] transition-all duration-300 ${isChatListVisible ? "md:ml-80" : ""
-            }`}
+          className={`h-[calc(100vh-4rem)] transition-all duration-300 ${
+            isChatListVisible ? "md:ml-80" : ""
+          }`}
         >
           <ChatBox />
         </motion.div>

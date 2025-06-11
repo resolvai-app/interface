@@ -49,7 +49,8 @@ export default function ChatBox() {
   const handleCreateChat = (type: "food" | "netflix") => {
     upsertChat({
       title: type === "food" ? "Food Delivery Chat" : "Unsubscribe Netflix",
-      describe: type === "food" ? "Order food delivery service" : "Cancel your Netflix subscription easily",
+      describe:
+        type === "food" ? "Order food delivery service" : "Cancel your Netflix subscription easily",
       state: {
         model: "gemini-2.0-flash-live-001",
         voice: "alloy",

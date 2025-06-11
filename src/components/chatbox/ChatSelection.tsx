@@ -26,9 +26,7 @@ export const ChatSelection = ({ onCreateChat }: ChatSelectionProps) => (
       >
         <SiNetflix className="w-12 h-12 text-red-500 mb-4 group-hover:scale-110 transition-transform" />
         <h3 className="text-xl font-semibold text-white mb-2">Unsubscribe Netflix</h3>
-        <p className="text-gray-400 text-center">
-          Cancel your Netflix subscription easily
-        </p>
+        <p className="text-gray-400 text-center">Cancel your Netflix subscription easily</p>
       </button>
     </div>
   </div>
