@@ -89,7 +89,12 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         return;
       }
       const data = await response.json();
-      set({ chats: data.result });
+      if (data.total > 0) {
+        set({ chats: data.result });
+      } else {
+        set({ chats: [] });
+        localStorage.clear();
+      }
     } catch (error) {
       console.error("Error fetching chats:", error);
     }
