@@ -67,7 +67,7 @@ export default function ChatBox() {
     <div className="h-full flex flex-col relative">
       <CallModal isActive={isCallActive} onEndCall={endCall} chatId={selectedChatId} />
 
-      <div className="flex-1 overflow-y-auto p-4 pb-24">
+      <div className="flex-1 overflow-y-auto p-4 pb-[160px]">
         <div className="max-w-4xl mx-auto">
           <MessageList messages={messages} messagesEndRef={messagesEndRef} />
         </div>

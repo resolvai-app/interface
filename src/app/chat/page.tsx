@@ -36,7 +36,7 @@ export default function ChatPage() {
         <div className="h-full flex items-center justify-between px-4">
           <div className="flex items-center space-x-2">
             <FaComments className="w-6 h-6" />
-            <h1 className="text-xl font-semibold">Chat Manager</h1>
+            <h1 className="text-xl font-semibold">ResolvAI</h1>
           </div>
           <Link href="/" className="p-2 hover:bg-gray-800 rounded-lg transition-colors">
             <FaHome className="w-5 h-5" />
