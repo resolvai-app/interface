@@ -81,6 +81,7 @@ export function useWssAPI(options: LiveClientOptions): UseLiveAPIResults {
   );
 
   const disconnect = useCallback(async () => {
+    audioStreamerRef.current?.stop();
     liveClient.disconnect();
     setConnected(false);
   }, [setConnected, liveClient]);
