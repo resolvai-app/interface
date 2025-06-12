@@ -54,7 +54,7 @@ export default function ChatBox() {
       state: {
         model: "gemini-2.0-flash-live-001",
         voice: "alloy",
-        type: type === "food" ? "food" : "netflix",
+        type: type === "food" ? "book_restaurant" : "unsubscribe_netflix",
       },
     });
   };
