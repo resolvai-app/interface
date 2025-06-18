@@ -1,7 +1,6 @@
 "use client";
 import { getApiUrl } from "@/lib/utils";
-import { Chat } from "@/types";
-import { Message } from "@ai-sdk/react";
+import { Chat, Message } from "@/types";
 import { create } from "zustand";
 
 interface ChatStore {
@@ -44,7 +43,6 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         const parsedMessages = JSON.parse(savedMessages);
 
         if (Array.isArray(parsedMessages) && parsedMessages.length > 0) {
-          console.log("loadMessages", chatId, parsedMessages);
           setMessages(parsedMessages);
         } else {
           setMessages([]);
@@ -58,7 +56,6 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     }
   },
   saveMessages: (chatId, messages) => {
-    console.log("saveMessages", chatId, messages);
     if (typeof window === "undefined") return;
     try {
       localStorage.setItem(`chat-${chatId}`, JSON.stringify(messages));
@@ -76,7 +73,6 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   fetchChats: async () => {
     try {
       const userId = get().getUserId();
-      console.log("fetchChats", userId);
       const response = await fetch(`${getApiUrl()}/chat-manager/list`, {
         method: "POST",
         headers: {

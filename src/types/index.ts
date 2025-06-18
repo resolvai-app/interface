@@ -43,3 +43,10 @@ export type Chat = {
   createdAt: string;
   state: Record<string, string | number | boolean>;
 };
+
+export interface Message {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  parts: { type: "text"; text: string }[];
+}

@@ -1,7 +1,7 @@
 "use client";
 import { useChatStore } from "@/hooks/store/useChatStore";
 import { Chat } from "@/types";
-import { Message } from "@ai-sdk/react";
+import { Message } from "@/types";
 import { createContext, FC, ReactNode, useContext } from "react";
 
 type ChatStateContextType = {
