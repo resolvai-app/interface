@@ -149,10 +149,10 @@ export class WssLiveClient extends EventEmitter<LiveClientEventTypes> {
       this.emit("content", messageData.content);
     }
     switch (messageData.event) {
-      case "turn_complete":
+      case "turncomplete":
         this.emit("turncomplete");
         break;
-      case "setup_complete":
+      case "setupcomplete":
         this.emit("setupcomplete");
         break;
       case "interrupted":
