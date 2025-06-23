@@ -147,7 +147,7 @@ export const CallModal = ({
     client.on("close", (e) => {
       setError(e.reason);
     });
-    if (connected && recorder) {
+    if (isActive && connected && recorder) {
       recorder
         .on("data", onData)
         .on("volume", setInVolume)
@@ -161,7 +161,7 @@ export const CallModal = ({
     return () => {
       recorder?.off("data", onData).off("volume", setInVolume);
     };
-  }, [connected, client]);
+  }, [connected, client, isActive]);
 
   // 新增：包装 connect 事件
   const handleConnect = async () => {

@@ -36,6 +36,7 @@ export class WssLiveClient extends EventEmitter<LiveClientEventTypes> {
   private ws: WebSocket | null = null;
   private _status: "connected" | "disconnected" | "connecting" = "disconnected";
   private _streamId: string | null = null;
+  private _modality: "audio" | "text" = "audio";
   public get status() {
     return this._status;
   }
@@ -65,8 +66,9 @@ export class WssLiveClient extends EventEmitter<LiveClientEventTypes> {
     this.emit("log", log);
   }
 
-  async connect(chatId: string): Promise<boolean> {
+  async connect(chatId: string, modality: "audio" | "text" = "audio"): Promise<boolean> {
     this._streamId = chatId;
+    this._modality = modality;
     if (this._status === "connected" || this._status === "connecting") {
       return false;
     }
@@ -115,6 +117,9 @@ export class WssLiveClient extends EventEmitter<LiveClientEventTypes> {
             channels: 1,
           },
           tracks: ["user_audio_input"],
+          customParameters: {
+            modality: this._modality,
+          },
         },
       },
       true

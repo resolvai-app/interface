@@ -8,7 +8,7 @@ import { LiveClientOptions } from "../types";
 export type UseLiveAPIResults = {
   client: WssLiveClient;
   connected: boolean;
-  connect: (chatId: string) => Promise<void>;
+  connect: (chatId: string, modality: "audio" | "text") => Promise<void>;
   disconnect: () => Promise<void>;
   volume: number;
 };
@@ -73,9 +73,9 @@ export function useWssAPI(options: LiveClientOptions): UseLiveAPIResults {
   }, [liveClient]);
 
   const connect = useCallback(
-    async (chatId: string) => {
+    async (chatId: string, modality: "audio" | "text" = "audio") => {
       liveClient.disconnect();
-      await liveClient.connect(chatId);
+      await liveClient.connect(chatId, modality);
     },
     [liveClient]
   );

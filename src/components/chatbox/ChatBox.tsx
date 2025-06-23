@@ -1,8 +1,8 @@
 "use client";
 import { useChatStateContext } from "@/contexts/ChatStateContext";
-import { getApiUrl } from "@/lib/utils";
-import { Message, useChat } from "@ai-sdk/react";
-import { useEffect, useRef, useState } from "react";
+import { useLiveAPIContext } from "@/contexts/LiveAPIContext";
+import { Message } from "@/types";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CallModal } from "./CallModal";
 import { ChatInput } from "./ChatInput";
 import { ChatSelection } from "./ChatSelection";
@@ -10,15 +10,116 @@ import { MessageList } from "./MessageList";
 
 // 主组件
 export default function ChatBox() {
+  const { client, connected, connect, disconnect } = useLiveAPIContext();
   const { selectedChatId, upsertChat, saveMessages, syncMessages } = useChatStateContext();
-  const { messages, input, handleInputChange, handleSubmit, setMessages } = useChat({
-    api: `${getApiUrl()}/chat`,
-    maxSteps: 5,
-    id: selectedChatId || "default",
-    initialMessages: [],
-  });
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState("");
   const [isCallActive, setIsCallActive] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const [lastMessageId, setLastMessageId] = useState<string>(crypto.randomUUID());
+  const lastMessageIdRef = useRef(lastMessageId);
+
+  useEffect(() => {
+    lastMessageIdRef.current = lastMessageId;
+  }, [lastMessageId]);
+
+  const appendClientMessage = useCallback((message: Message) => {
+    setMessages((prevMessages) => {
+      const id = lastMessageIdRef.current;
+      const index = prevMessages.findIndex((m) => m.id === id);
+      if (index !== -1) {
+        // 合并 parts，type = 'text' 的合并为一个 part
+        const oldParts = prevMessages[index].parts;
+        const newParts = message.parts;
+        const allParts = [...oldParts, ...newParts];
+        const mergedParts: typeof allParts = [];
+        let textBuffer = "";
+        for (const part of allParts) {
+          if (part.type === "text") {
+            textBuffer += part.text;
+          } else {
+            if (textBuffer) {
+              mergedParts.push({ type: "text", text: textBuffer });
+              textBuffer = "";
+            }
+            mergedParts.push(part);
+          }
+        }
+        if (textBuffer) {
+          mergedParts.push({ type: "text", text: textBuffer });
+        }
+        return [
+          ...prevMessages.slice(0, index),
+          {
+            ...prevMessages[index],
+            parts: mergedParts,
+            content: mergedParts
+              .filter((p) => p.type === "text")
+              .map((p) => p.text)
+              .join(""),
+          },
+          ...prevMessages.slice(index + 1),
+        ];
+      } else {
+        message.id = id;
+        return [...prevMessages, message];
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (client) {
+      client.off("content").off("turncomplete");
+      client
+        .on("content", (data) => {
+          console.log("content", data);
+          const id = lastMessageIdRef.current;
+          const newMessage = {
+            role: "assistant",
+            content: data.modelTurn.parts[0].text,
+            id,
+            parts: data.modelTurn.parts.map((part: Record<string, unknown>) => ({
+              type: part.text ? "text" : "toolInvocation",
+              text: part.text,
+            })),
+          } as Message;
+          appendClientMessage(newMessage);
+        })
+        .on("turncomplete", () => {
+          setLastMessageId(crypto.randomUUID());
+        });
+    }
+    if (selectedChatId) {
+      disconnect();
+      connect(selectedChatId, isCallActive ? "audio" : "text");
+    }
+  }, [selectedChatId, isCallActive, client, disconnect, connect, appendClientMessage]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (input.trim() && selectedChatId) {
+      setMessages([
+        ...messages,
+        {
+          role: "user",
+          content: input,
+          id: crypto.randomUUID(),
+          parts: [{ type: "text", text: input }],
+        },
+      ]);
+      setInput("");
+      if (!connected) {
+        connect(selectedChatId, isCallActive ? "audio" : "text");
+      }
+      client.send({
+        event: "content",
+        streamSid: selectedChatId,
+        content: {
+          text: input,
+        },
+      });
+    }
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -75,7 +176,7 @@ export default function ChatBox() {
 
       <ChatInput
         input={input}
-        onInputChange={handleInputChange}
+        onInputChange={(e) => setInput(e.target.value)}
         onSubmit={handleSubmit}
         isCallActive={isCallActive}
         onCallToggle={isCallActive ? endCall : startCall}
