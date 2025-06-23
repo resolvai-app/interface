@@ -20,11 +20,11 @@ import AudioPulse from "@/components/audio-pulse/AudioPulse";
 import SettingsDialog from "@/components/settings-dialog/SettingsDialog";
 import { useLiveAPIContext } from "@/contexts/LiveAPIContext";
 import { AudioRecorder } from "@/lib/audio-recorder";
+import { audioContext } from "@/lib/utils";
 import cn from "classnames";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { FaPhone, FaPhoneSlash, FaTimes } from "react-icons/fa";
-import { audioContext } from "@/lib/utils";
 
 const MatrixRain = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -174,7 +174,7 @@ export const CallModal = ({
     } catch (e) {
       console.log("[audio-context] resume error:", e);
     }
-    connect(chatId);
+    connect(chatId, "audio");
   };
 
   if (!isActive) return null;

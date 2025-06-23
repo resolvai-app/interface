@@ -1,10 +1,11 @@
 "use client";
+import { Message } from "@/types";
 import { FaComments, FaRobot, FaUser } from "react-icons/fa";
 import ReactMarkdown, { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 interface MessageListProps {
-  messages: any[];
+  messages: Message[];
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
 }
 
@@ -82,7 +83,7 @@ export const MessageList = ({ messages, messagesEndRef }: MessageListProps) => {
 
   return (
     <div className="space-y-2">
-      {messages.map((message) => (
+      {messages.filter((message) => message.content).map((message) => (
         <div
           key={message.id}
           className={`flex items-start ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}
@@ -95,9 +96,8 @@ export const MessageList = ({ messages, messagesEndRef }: MessageListProps) => {
             )}
           </div>
           <div
-            className={`mx-2 p-2 rounded-lg md:max-w-[80%] text-sm ${
-              message.role === "user" ? "bg-blue-500 text-white" : "bg-gray-800 text-gray-200"
-            }`}
+            className={`mx-2 p-2 rounded-lg md:max-w-[80%] text-sm ${message.role === "user" ? "bg-blue-500 text-white" : "bg-gray-800 text-gray-200"
+              }`}
           >
             {message.parts.map((part: any, i: number) => {
               switch (part.type) {
